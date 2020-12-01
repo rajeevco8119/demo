@@ -1,0 +1,10 @@
+Firstly we all define AWS as PaaS. But knowingly or not, when we actually create ec2 instance, we are actually working on IaaS because we provide all the resources to our project. We define instance type-t2.micro which has specification of ram, vcpu and disk, this we call flavor. We also define instance type- AMI, windows, linux etc- this is called image. We also define Networks, Security-group and Key-Pair. Thus in a way we create infrastructure for our code, not technically though but through GUI. That's why its PaaS
+
+Next point comes- Why we are shifting to automation? Let's take a scenario. Lets say we want to spin 3 instances, probably it will take up 15 minutes to deploy. But lets say we need 50 or 100 instances. In that case? Well automation reduces a lot of iterative work
+
+The next question arises- Why ansible?  Especially when we have AWS CloudFormation. We also have boto3 module. The simple reason is that boto3 and CloudFormation are very platform specific. Only AWS can use it. What if we want to intergrate AWS with GCP or Azure or Open source technologies. Well Ansible work like wonders here.. Once we define module-we can use ansible on any platform. 
+
+What is Ansible? Wikipedia defines-" Ansible is an open-source software provisioning, configuration management, and application-deployment tool enabling infrastructure as code. It runs on many Unix-like systems, and can configure both Unix-like systems as well as Microsoft Windows." 
+
+If  we need an idea we can follow here- https://www.tutorialspoint.com/ansible/index.htm 
+
