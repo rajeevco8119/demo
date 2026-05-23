@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ml-training-pipeline
+  namespace: default
+spec:
+  template:
+    spec:
+      # 1. BYPASS THE GUARDRAIL: Allow the pod to land on your expensive, tainted GPU nodes
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gpu"
+        effect: "NoSchedule"
+
+      # 2. TARGET THE HARDWARE: Explicitly ask to be placed on a machine with a physical GPU
+      nodeSelector:
+        nvidia.com/gpu.present: "true"
+
+      containers:
+      - name: deep-learning-runner
+        # Use an official framework image that comes pre-packaged with CUDA and cuDNN
+        image: pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
+        
+        # Command to pull your code and execute your training script
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo "Checking GPU Availability inside the container..."
+            nvidia-smi
+            echo "Starting ML training script..."
+            python training_job.py --epochs 10 --batch-size 64
+            
+        resources:
+          # 3. THE ACCOUNTANT BLOCK: Tells Kubernetes to reserve exactly 1 physical GPU
+          limits:
+            nvidia.com/gpu: "1" 
+            cpu: "4"
+            memory: "16Gi"
+          requests:
+            nvidia.com/gpu: "1"
+            cpu: "2"
+            memory: "8Gi"
+            
+      restartPolicy: OnFailure
+  # Automatically clean up completed job resources after 1 hour (3600 seconds) to keep the cluster clean
+  ttlSecondsAfterFinished: 3600
